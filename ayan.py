@@ -287,7 +287,8 @@ async def handle_admin_panel(update, context):  # HANDLE ADMIN PANEL (UPDATED)
         text += f"{pid}. {item['nama']}: {item['stok']}x\n"
     
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("➕ Tambah Stok", callback_data="tambah_stok")],
+        [InlineKeyboardButton("➕ Tambah Stok", callback_data="tambah_stok"),
+         InlineKeyboardButton("🔄 Ubah Saldo", callback_data="ubah_saldo")],
         [InlineKeyboardButton("🔙 Kembali", callback_data="back_to_produk")]
     ])
     
@@ -743,6 +744,91 @@ async def handle_pilih_produk_stok(update, context):
         reply_markup=reply_keyboard
     )
 
+# ============= FITUR UBAH SALDO (BARU) =============
+
+async def handle_ubah_saldo(update, context):
+    query = update.callback_query
+    if query.from_user.id != OWNER_ID:
+        await query.answer("Hanya admin yang bisa mengakses ini.", show_alert=True)
+        return
+
+    await query.message.delete()
+    reply_keyboard = ReplyKeyboardMarkup(
+        [[KeyboardButton("❌ Batalkan")]],
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+    await context.bot.send_message(
+        chat_id=query.from_user.id,
+        text="Kirim ID user yang saldo-nya ingin diubah:",
+        reply_markup=reply_keyboard
+    )
+    user_context[str(query.from_user.id)] = {
+        "action": "ubah_saldo",
+        "step": "id"
+    }
+
+async def process_ubah_saldo(update, context):
+    user_id = str(update.effective_user.id)
+    if int(user_id) != OWNER_ID:
+        return False
+    text = update.message.text.strip()
+    
+    if text == "❌ Batalkan":
+        if user_id in user_context:
+            del user_context[user_id]
+        await update.message.reply_text(
+            "✅ Proses dibatalkan.",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        await send_main_menu_safe(update, context)
+        return True
+    
+    if user_id not in user_context:
+        return False
+    
+    ctx = user_context[user_id]
+    if ctx.get("action") != "ubah_saldo":
+        return False
+    
+    if ctx["step"] == "id":
+        try:
+            target_id = int(text)
+            saldo = load_json(saldo_file)
+            if str(target_id) not in saldo:
+                await update.message.reply_text("❌ User tidak ditemukan.")
+                return True
+            ctx["target_id"] = target_id
+            ctx["step"] = "nominal"
+            await update.message.reply_text(
+                f"Saldo saat ini: Rp{saldo[str(target_id)]:,}\n\n"
+                "Kirim nominal perubahan (positif untuk tambah, negatif untuk kurang):"
+            )
+            return True
+        except ValueError:
+            await update.message.reply_text("❌ ID invalid, harus angka.")
+            return True
+    
+    elif ctx["step"] == "nominal":
+        try:
+            nominal = int(text)
+            saldo = load_json(saldo_file)
+            target_str = str(ctx["target_id"])
+            old_saldo = saldo.get(target_str, 0)
+            saldo[target_str] = old_saldo + nominal
+            save_json(saldo_file, saldo)
+            add_riwayat(ctx["target_id"], "ADMIN_UBAH", f"Perubahan saldo oleh admin: {nominal}", abs(nominal))
+            await update.message.reply_text(
+                f"✅ Saldo user {ctx['target_id']} diubah dari Rp{old_saldo:,} menjadi Rp{saldo[target_str]:,}",
+                reply_markup=ReplyKeyboardRemove()
+            )
+            del user_context[user_id]
+            await send_main_menu_safe(update, context)
+            return True
+        except ValueError:
+            await update.message.reply_text("❌ Nominal invalid, harus angka.")
+            return True
+
 # ============= CALLBACK HANDLERS =============
 
 callback_handlers = {
@@ -754,6 +840,7 @@ callback_handlers = {
     "cancel_deposit": handle_cancel_deposit,
     "admin_panel": handle_admin_panel,
     "tambah_stok": handle_tambah_stok_menu,  # TAMBAHAN BARU
+    "ubah_saldo": handle_ubah_saldo,  # TAMBAHAN BARU
     "qty_plus": handle_qty_plus,
     "qty_minus": handle_qty_minus,
     "confirm_order": handle_confirm_order,
@@ -798,6 +885,10 @@ async def handle_text(update: Update, context: CallbackContext):
 
     # CEK UNTUK PROSES TAMBAH STOK (ADMIN)
     if await process_add_stock(update, context):
+        return
+
+    # CEK UNTUK PROSES UBAH SALDO (ADMIN)
+    if await process_ubah_saldo(update, context):
         return
 
     if text == "❌ Batalkan Deposit":
