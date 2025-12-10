@@ -64,7 +64,7 @@ async def send_main_menu(context, chat_id, user):
     total = statistik.get(str(user.id), {}).get("nominal", 0)
 
     text = (
-        f"👋 Selamat datang di *Yukai Store*!\n\n"
+        f"👋 Selamat datang di *YUKAISTORE*!\n\n"
         f"🧑 Nama: {user.full_name}\n"
         f"🆔 ID: {user.id}\n"
         f"💰 Total Saldo Kamu: Rp{s:,}\n"
@@ -242,12 +242,13 @@ async def handle_deposit_nominal(update, context):  # HANDLE DEPOSIT NOMINAL
             resize_keyboard=True, one_time_keyboard=True
         )
         await query.message.delete()
-        await context.bot.send_message(
+        await context.bot.send_photo(
             chat_id=query.from_user.id,
-            text=f"💳 Transfer *Rp{nominal + 23:,}* ke:\n"
-                 "`DANA 0812-1259-4112 A.N And**`\n"
-                 "`SEABANK 901655655990 A.N Rizky Oryza`\n"
-                 "`BANK JAGO 107616413403 A.N Rizky Oryza`\nSetelah transfer, kirim bukti ke bot ini.",
+            photo=InputFile("qr.jpg"),
+            caption=f"💳 Transfer *Rp{nominal + 23:,}* ke:\n"
+                 "`DANA 0812-1259-4112 A.N YUKAISTORE`\n"
+                 "`SEABANK 901655655990 A.N YUKAISTORE`\n"
+                 "`BANK JAGO 107616413403 A.N YUKAISTORE`\nSetelah transfer, kirim bukti ke bot ini.",
             parse_mode="Markdown",
             reply_markup=reply_keyboard
         )
@@ -517,17 +518,13 @@ async def handle_info_bot(update, context):  # HANDLE INFO BOT
     text = (
         "📖 *INFORMASI BOT*\n"
         "╽─────────────────────────────╮\n"
-        "├ 🧠 *Nama Bot*: `Store Ekha`\n"
-        "├ 👨‍💻 *Author*: [@govtrashit](https://t.me/govtrashit)\n"
-        "├ 🛒 *Fungsi*: Penjualan akun digital otomatis\n"
-        "├ ⚙️ *Fitur*: Deposit, Pengiriman Akun, Statistik\n"
-        "├ 🧰 *Teknologi*: Python, Telegram Bot API\n"
-        "├ 🗓️ *Update*: 18 Juni 2025\n"
+        "├  *Nama Bot*: `YUKAISTORE`\n"
+        "├  *Author*: [@MYOTAKKU](https://t.me/MYOTAKKU)\n"
+        "├  *Fungsi*: Penjualan akun digital otomatis\n"
+        "├  *Fitur*: Deposit, Pengiriman Akun, Statistik\n"
+        "├  *Update*: TERBARU\n"
         "╰─────────────────────────────╯\n\n"
-        "🌐 *Sosial Media Developer:*\n"
-        "• GitHub: [@rzzky](https://github.com/rzzky)\n"
-        "• Instagram: [@rizzkyo](https://instagram.com/rizzkyo)\n\n"
-        "💬 *Saran / kritik?* Hubungi [@govtrashit](https://t.me/govtrashit)"
+        "💬 *Saran / kritik?* Hubungi [@MYOTAKKU](https://t.me/MYOTAKKU)"
     )
 
     keyboard = InlineKeyboardMarkup([
@@ -909,9 +906,11 @@ async def handle_text(update: Update, context: CallbackContext):
                 [[KeyboardButton("❌ Batalkan Deposit")]],
                 resize_keyboard=True, one_time_keyboard=True
             )
-            await update.message.reply_text(
-                f"💳 Transfer *Rp{nominal + 23:,}* ke:\n"
-                "`DANA 0812-XXXX-XXXX a.n. Store Ekha`\nSetelah transfer, kirim bukti foto transfer ke bot ini.",
+            await context.bot.send_photo(
+                chat_id=update.effective_chat.id,
+                photo=InputFile("qr.jpg"),
+                caption=f"💳 Transfer *Rp{nominal + 23:,}* ke:\n"
+                        "`SESUAI NOMINAL`\nSetelah transfer, kirim bukti foto transfer ke bot ini.",
                 parse_mode="Markdown",
                 reply_markup=reply_keyboard
             )
