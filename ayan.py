@@ -244,11 +244,9 @@ async def handle_deposit_nominal(update, context):  # HANDLE DEPOSIT NOMINAL
         await query.message.delete()
         await context.bot.send_photo(
             chat_id=query.from_user.id,
-            photo=InputFile("qr.jpg"),
+            photo=InputFile("qr.png"),
             caption=f"💳 Transfer *Rp{nominal + 23:,}* ke:\n"
-                 "`DANA 0812-1259-4112 A.N YUKAISTORE`\n"
-                 "`SEABANK 901655655990 A.N YUKAISTORE`\n"
-                 "`BANK JAGO 107616413403 A.N YUKAISTORE`\nSetelah transfer, kirim bukti ke bot ini.",
+                 "YUKAISTORE`\nSetelah transfer, kirim bukti ke bot ini.",
             parse_mode="Markdown",
             reply_markup=reply_keyboard
         )
