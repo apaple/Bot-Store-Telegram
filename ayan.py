@@ -1,5 +1,5 @@
-import json # Made With love by @govtrashit A.K.A RzkyO
-import os # DON'T CHANGE AUTHOR NAME!
+import json  # Made With love by @govtrashit A.K.A RzkyO
+import os  # DON'T CHANGE AUTHOR NAME!
 from telegram import (
     Update, InlineKeyboardButton, InlineKeyboardMarkup,
     InputFile, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, CallbackQuery
@@ -95,7 +95,7 @@ async def send_main_menu_safe(update, context):
         await update.callback_query.message.delete()
         await send_main_menu(context, update.callback_query.from_user.id, update.callback_query.from_user)
 
-async def handle_list_produk(update, context): # HANDLE LIST PRODUK
+async def handle_list_produk(update, context):  # HANDLE LIST PRODUK
     query = update.callback_query
     produk = load_json(produk_file)
     msg = "*LIST PRODUK*\n"
@@ -127,8 +127,7 @@ async def handle_list_produk(update, context): # HANDLE LIST PRODUK
         parse_mode="Markdown"
     )
 
-
-async def handle_cek_stok(update, context): # HANDLE CEK STOK
+async def handle_cek_stok(update, context):  # HANDLE CEK STOK
     query = update.callback_query
     produk = load_json(produk_file)
     now = datetime.now().strftime("%d/%m/%Y, %H:%M:%S")
@@ -161,7 +160,7 @@ async def handle_cek_stok(update, context): # HANDLE CEK STOK
         parse_mode="Markdown"
     )
 
-async def handle_produk_detail(update, context): # HANDLE PRODUK DETAIL
+async def handle_produk_detail(update, context):  # HANDLE PRODUK DETAIL
     query = update.callback_query
     data = query.data
     produk = load_json(produk_file)
@@ -217,7 +216,7 @@ async def handle_deposit(update, context):  # HANDLE DEPOSIT
         reply_markup=InlineKeyboardMarkup(keyboard)
     )
 
-async def handle_deposit_nominal(update, context): # HANDLE DEPOSIT NOMINAL
+async def handle_deposit_nominal(update, context):  # HANDLE DEPOSIT NOMINAL
     query = update.callback_query
     data = query.data
     if data == "deposit_custom":
@@ -262,7 +261,7 @@ async def handle_cancel_deposit(update, context):
     await query.edit_message_text("✅ Deposit kamu telah dibatalkan.")
     await send_main_menu(context, query.from_user.id, query.from_user)
 
-async def handle_admin_panel(update, context): # HANDLE ADMIN PANEL (UPDATED)
+async def handle_admin_panel(update, context):  # HANDLE ADMIN PANEL (UPDATED)
     query = update.callback_query
     saldo = load_json(saldo_file)
     pending = load_json(deposit_file)
@@ -294,7 +293,7 @@ async def handle_admin_panel(update, context): # HANDLE ADMIN PANEL (UPDATED)
     
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=keyboard)
 
-async def handle_admin_confirm(update, context): # HANDLE ADMIN CONFIRM
+async def handle_admin_confirm(update, context):  # HANDLE ADMIN CONFIRM
     query = update.callback_query
     user_id = int(query.data.split(":")[1])
     keyboard = InlineKeyboardMarkup([
@@ -303,8 +302,7 @@ async def handle_admin_confirm(update, context): # HANDLE ADMIN CONFIRM
     ])
     await query.edit_message_caption("Konfirmasi saldo ke user ini?", reply_markup=keyboard)
 
-
-async def handle_admin_final(update, context): # HANDLE ADMIN FINAL
+async def handle_admin_final(update, context):  # HANDLE ADMIN FINAL
     query = update.callback_query
     user_id = int(query.data.split(":")[1])
     pending = load_json(deposit_file)
@@ -334,7 +332,7 @@ async def handle_admin_final(update, context): # HANDLE ADMIN FINAL
     else:
         await query.edit_message_caption("❌ Data deposit tidak ditemukan.")
 
-async def handle_admin_reject(update, context): # HANDLE ADMIN REJECT
+async def handle_admin_reject(update, context):  # HANDLE ADMIN REJECT
     query = update.callback_query
     user_id = int(query.data.split(":")[1])
     await query.edit_message_caption("❌ Deposit ditolak.")
@@ -344,7 +342,7 @@ async def handle_admin_reject(update, context): # HANDLE ADMIN REJECT
         reply_markup=ReplyKeyboardRemove()
     )
 
-async def handle_qty_plus(update, context): # HANDLE QTY PLUS
+async def handle_qty_plus(update, context):  # HANDLE QTY PLUS
     query = update.callback_query
     produk = load_json(produk_file)
     info = context.user_data.get("konfirmasi")
@@ -391,7 +389,7 @@ async def handle_qty_plus(update, context): # HANDLE QTY PLUS
 
     await query.edit_message_text(text, reply_markup=keyboard)
 
-async def handle_qty_minus(update, context): # HANDLE QTY MINUS
+async def handle_qty_minus(update, context):  # HANDLE QTY MINUS
     query = update.callback_query
     produk = load_json(produk_file)
     info = context.user_data.get("konfirmasi")
@@ -438,8 +436,7 @@ async def handle_qty_minus(update, context): # HANDLE QTY MINUS
 
     await query.edit_message_text(text, reply_markup=keyboard)
 
-
-async def handle_confirm_order(update, context): # HANDLE CONFIRM ORDER
+async def handle_confirm_order(update, context):  # HANDLE CONFIRM ORDER
     query = update.callback_query
     uid = str(query.from_user.id)
     produk = load_json(produk_file)
@@ -505,16 +502,14 @@ async def handle_confirm_order(update, context): # HANDLE CONFIRM ORDER
     context.user_data.pop("konfirmasi", None)
     await send_main_menu(context, query.from_user.id, query.from_user)
 
-async def handle_back(update, context): # HANDLE BACK
+async def handle_back(update, context):  # HANDLE BACK
     query = update.callback_query
     await query.edit_message_caption("✅ Dibatalkan.")
 
-
-async def handle_back_to_produk(update, context): # HANDLE BACK TO PRODUK
+async def handle_back_to_produk(update, context):  # HANDLE BACK TO PRODUK
     query = update.callback_query
     await query.message.delete()
     await send_main_menu(context, query.from_user.id, query.from_user)
-
 
 async def handle_info_bot(update, context):  # HANDLE INFO BOT
     query = update.callback_query
@@ -545,7 +540,7 @@ async def handle_info_bot(update, context):  # HANDLE INFO BOT
         reply_markup=keyboard
     )
 
-async def handle_ignore(update, context): # HANDLE IGNORE
+async def handle_ignore(update, context):  # HANDLE IGNORE
     query = update.callback_query
     await query.answer()
 
@@ -568,7 +563,7 @@ async def handle_tambah_stok_menu(update, context):
     
     keyboard.append([InlineKeyboardButton("🔙 Kembali", callback_data="back_to_produk")])
     
-    await update.message.reply_text(
+    await query.edit_message_text(
         text,
         parse_mode="Markdown",
         reply_markup=InlineKeyboardMarkup(keyboard)
@@ -672,6 +667,81 @@ async def process_add_stock(update, context):
     
     await send_main_menu_safe(update, context)
     return True
+
+async def handle_command_addstock(update, context):
+    """Command /addstock untuk admin"""
+    user = update.effective_user
+    
+    if user.id != OWNER_ID:
+        await update.message.reply_text("❌ Command ini hanya untuk admin!")
+        return
+    
+    produk = load_json(produk_file)
+    
+    text = "*📦 TAMBAH STOK PRODUK*\n\nPilih produk yang ingin ditambahkan stoknya:\n\n"
+    keyboard = []
+    
+    for pid, item in produk.items():
+        text += f"{pid}. {item['nama']} (Stok saat ini: {item['stok']})\n"
+        keyboard.append([InlineKeyboardButton(
+            f"{pid}. {item['nama']}", 
+            callback_data=f"addstock_{pid}"
+        )])
+    
+    keyboard.append([InlineKeyboardButton("🔙 Kembali", callback_data="admin_panel")])
+    
+    await update.message.reply_text(
+        text,
+        parse_mode="Markdown",
+        reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+async def handle_pilih_produk_stok(update, context):
+    """Ketika admin memilih produk untuk ditambah stok"""
+    query = update.callback_query
+    produk_id = query.data.split("_")[1]
+    produk = load_json(produk_file)
+    
+    if produk_id not in produk:
+        await query.answer("❌ Produk tidak ditemukan", show_alert=True)
+        return
+    
+    item = produk[produk_id]
+    
+    # Simpan context user
+    user_context[str(query.from_user.id)] = {
+        "action": "add_stock",
+        "produk_id": produk_id,
+        "step": "username"
+    }
+    
+    reply_keyboard = ReplyKeyboardMarkup(
+        [[KeyboardButton("❌ Batalkan")]],
+        resize_keyboard=True,
+        one_time_keyboard=True
+    )
+    
+    await query.message.delete()
+    await context.bot.send_message(
+        chat_id=query.from_user.id,
+        text=f"*📦 TAMBAH STOK: {item['nama']}*\n\n"
+             f"Stok saat ini: {item['stok']}\n\n"
+             f"Silakan kirim data akun dengan format:\n"
+             f"```\n"
+             f"username1@mail.com|password1|tipe1\n"
+             f"username2@mail.com|password2|tipe2\n"
+             f"username3@mail.com|password3|tipe3\n"
+             f"```\n\n"
+             f"*Contoh:*\n"
+             f"```\n"
+             f"spotify10@mail.com|pass123|1 Bulan Student\n"
+             f"spotify11@mail.com|pass456|1 Bulan Student\n"
+             f"```\n\n"
+             f"Pisahkan dengan "|" (pipe) dan setiap akun di baris baru.\n"
+             f"Atau kirim satu per satu.",
+        parse_mode="Markdown",
+        reply_markup=reply_keyboard
+    )
 
 # ============= CALLBACK HANDLERS =============
 
@@ -841,7 +911,7 @@ async def handle_photo(update: Update, context: CallbackContext):
         )
     await update.message.reply_text("✅ Bukti dikirim! Tunggu konfirmasi admin.")
 
-def main(): # Made With love by @govtrashit A.K.A RzkyO
+def main():  # Made With love by @govtrashit A.K.A RzkyO
     app = Application.builder().token("8130810030:AAEG6UmjONPbLsXkUpAcCKQwCDImHEtRieM").build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("addstock", handle_command_addstock))  # TAMBAHAN BARU
@@ -851,79 +921,4 @@ def main(): # Made With love by @govtrashit A.K.A RzkyO
     app.run_polling()
 
 if __name__ == "__main__":
-    main() produk yang ingin ditambahkan stoknya:\n\n"
-    keyboard = []
-    
-    for pid, item in produk.items():
-        text += f"{pid}. {item['nama']} (Stok saat ini: {item['stok']})\n"
-        keyboard.append([InlineKeyboardButton(
-            f"{pid}. {item['nama']}", 
-            callback_data=f"addstock_{pid}"
-        )])
-    
-    keyboard.append([InlineKeyboardButton("🔙 Kembali", callback_data="admin_panel")])
-    
-    await query.edit_message_text(
-        text,
-        parse_mode="Markdown",
-        reply_markup=InlineKeyboardMarkup(keyboard)
-    )
-
-async def handle_pilih_produk_stok(update, context):
-    """Ketika admin memilih produk untuk ditambah stok"""
-    query = update.callback_query
-    produk_id = query.data.split("_")[1]
-    produk = load_json(produk_file)
-    
-    if produk_id not in produk:
-        await query.answer("❌ Produk tidak ditemukan", show_alert=True)
-        return
-    
-    item = produk[produk_id]
-    
-    # Simpan context user
-    user_context[str(query.from_user.id)] = {
-        "action": "add_stock",
-        "produk_id": produk_id,
-        "step": "username"
-    }
-    
-    reply_keyboard = ReplyKeyboardMarkup(
-        [[KeyboardButton("❌ Batalkan")]],
-        resize_keyboard=True,
-        one_time_keyboard=True
-    )
-    
-    await query.message.delete()
-    await context.bot.send_message(
-        chat_id=query.from_user.id,
-        text=f"*📦 TAMBAH STOK: {item['nama']}*\n\n"
-             f"Stok saat ini: {item['stok']}\n\n"
-             f"Silakan kirim data akun dengan format:\n"
-             f"```\n"
-             f"username1@mail.com|password1|tipe1\n"
-             f"username2@mail.com|password2|tipe2\n"
-             f"username3@mail.com|password3|tipe3\n"
-             f"```\n\n"
-             f"*Contoh:*\n"
-             f"```\n"
-             f"spotify10@mail.com|pass123|1 Bulan Student\n"
-             f"spotify11@mail.com|pass456|1 Bulan Student\n"
-             f"```\n\n"
-             f"Pisahkan dengan "|" (pipe) dan setiap akun di baris baru.\n"
-             f"Atau kirim satu per satu.",
-        parse_mode="Markdown",
-        reply_markup=reply_keyboard
-    )
-
-async def handle_command_addstock(update, context):
-    """Command /addstock untuk admin"""
-    user = update.effective_user
-    
-    if user.id != OWNER_ID:
-        await update.message.reply_text("❌ Command ini hanya untuk admin!")
-        return
-    
-    produk = load_json(produk_file)
-    
-    text = "*📦 TAMBAH STOK PRODUK*\n\nPilih
+    main()
