@@ -868,6 +868,11 @@ async def button_callback(update: Update, context: CallbackContext):
 
 async def start(update: Update, context: CallbackContext):
     user = update.effective_user
+    saldo = load_json(saldo_file)
+    uid = str(user.id)
+    if uid not in saldo:
+        saldo[uid] = 0
+        save_json(saldo_file, saldo)
     await send_main_menu(context, update.effective_chat.id, user)
 
 async def handle_text(update: Update, context: CallbackContext):
